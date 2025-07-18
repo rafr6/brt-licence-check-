@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>লাইসেন্স যুক্ত করুন (Admin)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>নতুন লাইসেন্স তথ্য যুক্ত করুন</h2>
+    <form id="licenseForm">
+      <input type="text" id="license" placeholder="লাইসেন্স নাম্বার" required><br>
+      <input type="text" id="name" placeholder="মালিকের নাম" required><br>
+      <input type="text" id="father" placeholder="পিতার নাম" required><br>
+      <input type="date" id="dob" placeholder="জন্ম তারিখ" required><br>
+      <input type="text" id="type" placeholder="লাইসেন্স ধরণ" required><br>
+      <input type="date" id="issue" placeholder="ইস্যু তারিখ" required><br>
+      <input type="date" id="expiry" placeholder="মেয়াদ শেষ" required><br>
+      <button type="submit">তথ্য সংরক্ষণ করুন</button>
+    </form>
+    <p id="msg"></p>
+  </div>
+  <script type="module">
+    import { db, ref, set } from './firebase-config.js';
+
+    document.getElementById("licenseForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const license = document.getElementById("license").value.trim();
+      const data = {
+        name: document.getElementById("name").value,
+        father: document.getElementById("father").value,
+        dob: document.getElementById("dob").value,
+        type: document.getElementById("type").value,
+        issue: document.getElementById("issue").value,
+        expiry: document.getElementById("expiry").value,
+      };
+
+      try {
+        await set(ref(db, 'licenses/' + license), data);
+        document.getElementById("msg").innerText = "✅ তথ্য সফলভাবে সংরক্ষিত হয়েছে!";
+        this.reset();
+      } catch (err) {
+        document.getElementById("msg").innerText = "❌ ত্রুটি হয়েছে!";
+        console.error(err);
+      }
+    });
+  </script>
+</body>
+</html>
